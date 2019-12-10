@@ -1,0 +1,42 @@
+# sensors
+# balenaSense sensors added by script
+sensor:
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.humidity }}"
+    name: "sense_humidity"
+    unit_of_measurement: "%"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.temperature }}"
+    name: "sense_temperature_c"
+    unit_of_measurement: "degrees"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ ((float(value_json.fields.temperature) * 9 / 5) + 32) | round(1) }}"
+    name: "sense_temperature_f"
+    unit_of_measurement: "degrees"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.air_quality_score }}"
+    name: "sense_air_quality_score"
+    unit_of_measurement: "score"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.pressure }}"
+    name: "sense_pressure"
+    unit_of_measurement: "mbar"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.air_quality_score_accuracy }}"
+    name: "sense_air_quality_score_accuracy"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.bvoce_ppm }}"
+    name: "sense_bvoce_ppm"
+    unit_of_measurement: "ppm"
+  - platform: mqtt
+    state_topic: "balena-sense/+/balena-sense"
+    value_template: "{{ value_json.fields.eco2_ppm }}"
+    name: "sense_eco2_ppm"
+    unit_of_measurement: "ppm"
