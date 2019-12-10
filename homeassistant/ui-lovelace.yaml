@@ -1,0 +1,53 @@
+views:
+  - title: main
+    cards:
+      - type: vertical-stack
+        cards:
+          - entity: weather.home
+            type: weather-forecast
+          - type: horizontal-stack
+            title: balenaSense Sensors
+            cards:
+              - entity: sensor.sense_air_quality_score
+                max: 500
+                min: 0
+                name: Air Quality Score
+                severity:
+                  green: 0
+                  red: 150
+                  yellow: 200
+                theme: default
+                type: gauge
+              - entity: sensor.sense_humidity
+                max: 100
+                min: 0
+                name: Humidity
+                theme: default
+                type: gauge
+          - type: horizontal-stack
+            cards:
+              - entity: sensor.sense_pressure
+                max: 1160
+                min: 870
+                name: Air Pressure
+                theme: default
+                type: gauge
+              - type: gauge
+                min: 0
+                max: 120
+                theme: default
+                entity: sensor.sense_temperature_f
+                name: Temperature
+                unit: °F
+          - type: history-graph
+            entities:
+              - entity: sensor.sense_air_quality_score
+                hours_to_show: 12
+                refresh_interval: 0
+                title: Air Quality History
+          - type: history-graph
+            entities:
+              - entity: sensor.sense_temperature_f
+                hours_to_show: 12
+                refresh_interval: 0
+            title: Temperature Sensor History
