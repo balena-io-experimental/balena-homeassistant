@@ -22,7 +22,7 @@ services:
     image: "causticlab/hass-configurator-docker:arm"
     restart: always
     ports:
-      - "3218:3218"
+      - "8080:3218"
     volumes:
       - 'config:/hass-config'
     environment:
