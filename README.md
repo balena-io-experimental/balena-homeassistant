@@ -1,4 +1,4 @@
-# balena-ha
+# balena-homeassistant
 Home Assistant with balenaSense using MQTT
 
 A full step-by-step tutorial is available here: [https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/](https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/)
