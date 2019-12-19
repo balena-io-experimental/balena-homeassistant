@@ -1,7 +1,7 @@
 # balena-ha
 Home Assistant with balenaSense using MQTT
 
-A full step-by-step tutorial is available here: TBA
+A full step-by-step tutorial is available here: [https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/](https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/)
 
 [Home Assistant](https://www.home-assistant.io/) is a popular open source home automation system that is often run from low-cost devices like a Raspberry Pi. Here’s how to use balenaSense to push its sensor data to Home Assistant using MQTT.
 
