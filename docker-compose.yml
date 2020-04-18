@@ -13,11 +13,8 @@ services:
     devices:
       - "/dev:/dev"
       - "/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave"
-  mqtt:
-    image: arm32v6/eclipse-mosquitto
-    ports:
-      - 1883:1883
-    restart: always
+    environment:
+      - TZ='Europe/Copenhagen'
   hass-configurator:
     image: "causticlab/hass-configurator-docker:arm"
     restart: always
@@ -31,4 +28,36 @@ services:
     image: nkuik89/automation-api:latest
     ports:
       - 8000:8080
+    restart: always
+  influxdb:
+    restart: always
+    build: ./influxdb
+    volumes:
+      - 'config:/data'
+  grafana:
+    restart: always
+    build: ./grafana
+    ports:
+      - "8081"
+    volumes:
+      - 'config:/data'
+    environment:
+        - 'GF_SERVER_HTTP_PORT=80'
+        - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
+        - 'GF_SESSION_PROVIDER=memory'
+  sensor:
+    build: ./sensor
+    privileged: true
+    restart: always
+    volumes:
+      - 'config:/data'
+  telegraf:
+    build: ./telegraf
+    restart: always
+    cap_add:
+      - SYS_ADMIN
+  mqtt:
+    image: arm32v6/eclipse-mosquitto
+    ports:
+      - "1883:1883"
     restart: always
