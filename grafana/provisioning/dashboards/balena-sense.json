@@ -162,7 +162,7 @@
           {
             "evaluator": {
               "params": [
-                150
+                200
               ],
               "type": "gt"
             },
@@ -187,7 +187,7 @@
         "for": "5m",
         "frequency": "1m",
         "handler": 1,
-        "message": "IAQ above 150!",
+        "message": "IAQ above 200!",
         "name": "Indoor Air Quality (IAQ) rating alert",
         "noDataState": "no_data",
         "notifications": [
