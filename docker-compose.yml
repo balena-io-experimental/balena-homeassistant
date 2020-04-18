@@ -24,11 +24,7 @@ services:
       - 'config:/hass-config'
     environment:
       - HC_BASEPATH=/hass-config
-  automation-api:
-    image: nkuik89/automation-api:latest
-    ports:
-      - 8000:8080
-    restart: always
+
   influxdb:
     restart: always
     build: ./influxdb
@@ -42,7 +38,7 @@ services:
     volumes:
       - 'config:/data'
     environment:
-        - 'GF_SERVER_HTTP_PORT=80'
+        - 'GF_SERVER_HTTP_PORT=8081'
         - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
         - 'GF_SESSION_PROVIDER=memory'
   sensor:
@@ -60,4 +56,9 @@ services:
     image: arm32v6/eclipse-mosquitto
     ports:
       - "1883:1883"
+    restart: always
+  automation-api:
+    image: nkuik89/automation-api:latest
+    ports:
+      - 8000:8080
     restart: always
