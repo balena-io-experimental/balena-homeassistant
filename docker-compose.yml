@@ -27,3 +27,8 @@ services:
       - 'config:/hass-config'
     environment:
       - HC_BASEPATH=/hass-config
+  automation-api:
+    ports:
+      - "8080:8080"
+    restart: always
+    image: nkuik89/automation-api:latest
