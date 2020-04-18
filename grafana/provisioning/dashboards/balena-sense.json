@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "panels": [
     {
@@ -193,6 +192,9 @@
         "notifications": [
           {
             "uid": "KcfwFLWgz"
+          },
+          {
+            "uid": "O_HNsDmgz"
           }
         ]
       },
@@ -208,7 +210,7 @@
         "x": 9,
         "y": 0
       },
-        "id": 12,
+      "id": 12,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -258,52 +260,11 @@
       ],
       "thresholds": [
         {
-          "colorMode": "ok",
+          "colorMode": "critical",
           "fill": true,
           "line": true,
-          "op": "lt",
-          "value": 50,
-          "yaxis": "left"
-        },
-        {
-          "colorMode": "custom",
-          "fill": false,
-          "fillColor": "rgba(250, 222, 42, 0)",
-          "line": true,
-          "lineColor": "#E0B400",
-          "op": "lt",
-          "value": 100,
-          "yaxis": "left"
-        },
-        {
-          "colorMode": "custom",
-          "fill": false,
-          "fillColor": "rgba(50, 116, 217, 0.2)",
-          "line": true,
-          "lineColor": "#FF9830",
-          "op": "lt",
-          "value": 150,
-          "yaxis": "left"
-        },
-        {
-          "colorMode": "custom",
-          "fill": false,
-          "fillColor": "rgba(50, 116, 217, 0.2)",
-          "line": true,
-          "lineColor": "#C4162A",
-          "op": "lt",
-          "value": 200,
-          "yaxis": "left"
-        },
-        {
-          "colorMode": "custom",
-          "fill": false,
-          "fillColor": "rgba(50, 116, 217, 0.2)",
-          "line": true,
-          "lineColor": "rgb(89, 0, 73)",
-          "op": "lt",
-          "value": 300,
-          "yaxis": "left"
+          "op": "gt",
+          "value": 200
         }
       ],
       "timeFrom": null,
@@ -1046,5 +1007,5 @@
   "timezone": "",
   "title": "balenaSense",
   "uid": "pF3gRDiRk",
-  "version": 1
+  "version": 3
 }
