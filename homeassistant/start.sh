@@ -2,6 +2,7 @@
 
 cp /tmp/configuration.yaml /config/configuration.yaml
 cp -R /tmp/custom_components /config/
+cp -R /tmp/themes /config/
 
 cp /tmp/sense.yaml /config/sense.yaml
 cp /tmp/sensors.sh /config/sensors.sh
