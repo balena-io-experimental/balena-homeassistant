@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cp /tmp/configuration.yaml /config/configuration.yaml
+cp -R /tmp/custom_components /config/
+
 cp /tmp/sense.yaml /config/sense.yaml
 cp /tmp/sensors.sh /config/sensors.sh
 cp /tmp/lovelace.sh /config/lovelace.sh
