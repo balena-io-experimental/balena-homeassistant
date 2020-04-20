@@ -110,8 +110,8 @@ scene: !include scenes.yaml
 
 sensor:
   - platform: pocketcasts
-    username: POCKET_CASTS_USER
-    password: POCKET_CASTS_PASSWORD
+    username: !env_var POCKET_CASTS_USER
+    password: !env_var POCKET_CASTS_PASSWORD
   - platform: google_wifi
     host: 192.168.86.1
   - platform: worldclock
