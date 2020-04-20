@@ -1,10 +1,9 @@
-
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-  base_url: https://930b7750f89431869afc2f01d97622eb.balena-devices.com
+  base_url: !nev_var BASE_URL 
   
 frontend:
   themes: !include_dir_merge_named ../themes
@@ -12,24 +11,6 @@ frontend:
 # Text to speech
 tts:
   - platform: google_translate
-
-sensor:
-  - platform: google_wifi
-    host: 192.168.86.1
-  - platform: worldclock
-    time_zone: !env_var TZ
-  - platform: yr
-    name: Weather
-    forecast: 24
-    monitored_conditions:
-      - temperature
-      - symbol
-      - precipitation
-      - windSpeed
-      - windDirection
-      - humidity
-      - fog
-      - cloudiness
       
 speedtestdotnet:
   scan_interval:
@@ -41,7 +22,7 @@ speedtestdotnet:
 
 # TODO: Switch to lovelace: https://github.com/dnguyen800/spotify-playlist-card
 spotify:
-  client_id: a8f7a5cafb284c3da398873c47fff910
+  client_id: !env_var SPOTIFY_ID 
   client_secret: !env_var SPOTIFY_TOKEN
 
 mqtt:  
@@ -126,9 +107,26 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
-# sensors
-# balenaSense sensors added by script
 sensor:
+  - platform: pocketcasts
+    username: POCKET_CASTS_USER
+    password: POCKET_CASTS_PASSWORD
+  - platform: google_wifi
+    host: 192.168.86.1
+  - platform: worldclock
+    time_zone: !env_var TZ
+  - platform: yr
+    name: Weather
+    forecast: 24
+    monitored_conditions:
+      - temperature
+      - symbol
+      - precipitation
+      - windSpeed
+      - windDirection
+      - humidity
+      - fog
+      - cloudiness
   - platform: mqtt
     state_topic: "balena-sense/+/balena-sense"
     value_template: "{{ value_json.fields.humidity }}"
@@ -168,70 +166,3 @@ sensor:
     value_template: "{{ value_json.fields.eco2_ppm }}"
     name: "sense_eco2_ppm"
     unit_of_measurement: "ppm"
-    
-frontend:
-  themes:
-    dark:
-      # Background image
-      lovelace-background: 'center / cover no-repeat url("/local/night.jpg") fixed'
-    
-      # Colors
-      text-color: '#DADADB'                                                           # Grey text
-      text-medium-light-color: '#A0A2A8'                                              # Medium-light grey text
-      text-medium-color: '#80828A'                                                    # Medium grey text
-      text-dark-color: '#6A6B74'                                                      # Dark grey text
-      accent-color: '#008bef'                                                         # Blue
-      accent-medium-color: '#2686c1'                                                  # Decent blue
-      background-color: '#3b4049'                                                     # Dark grey background
-      background-color-2: '#484E59'                                                   # Light grey background
-      background-card-color: '#434952'                                                # Grey background
-      border-color: '#383C46'                                                         # Grey border
-    
-      # Header
-      app-header-background-color: '#363941'                                          # Background color
-      
-      # Text
-      primary-color: 'var(--text-color)'
-      text-primary-color: 'var(--text-color)'
-      
-      # Left Menu
-      paper-listbox-background-color: 'var(--background-color)'                       # Background
-      sidebar-icon-color: 'var(--text-medium-color)'                                  # icons
-      sidebar-selected-icon-color: 'var(--text-medium-light-color)'                   # Selected row icon and background (15%)
-      sidebar-selected-text-color: 'var(--text-color)'                                # Selected row label
-    
-      # UI
-      paper-card-header-color: 'var(--text-color)'                                    # Title in settings
-      primary-background-color: 'var(--background-color)'                             # Background (also title background in left menu)
-      mdc-theme-primary: 'var(--accent-medium-color)'                                 # Action Buttons (save, restart etc.)
-      card-background-color: 'var(--background-card-color)'                           # Entity Registry Background
-      
-      # Card
-      paper-card-background-color: 'var(--background-card-color)'                     # Background
-      dark-primary-color: 'var(--text-color)'
-      primary-text-color: 'var(--text-color)'
-      paper-listbox-color: 'var(--text-color)'
-      light-primary-color: 'var(--text-dark-color)'
-      secondary-text-color: 'var(--text-medium-color)'
-      disabled-text-color: 'var(--text-dark-color)'
-      paper-dialog-button-color: 'var(--text-color)'
-      secondary-background-color: 'var(--background-color-2)'                         # Background more info title
-    
-      # Icons
-      paper-item-icon-color: 'var(--text-dark-color)'                                 # Off
-      paper-item-icon-active-color: 'var(--accent-color)'                             # On
-      
-      # Switches
-      switch-checked-button-color: 'var(--text-medium-light-color)'                   # Knob On
-      switch-unchecked-button-color: 'var(--text-medium-light-color)'                 # Knob Off
-      switch-checked-track-color: '#009FFF'                                           # Background On
-      switch-unchecked-track-color: '#767682'                                         # Background Off
-    
-      # Slider
-      paper-slider-active-color: 'var(--accent-color)'                                # Line On
-      paper-slider-container-color: 'var(--text-dark-color)'                          # Line Off
-      paper-slider-knob-color: 'var(--text-medium-light-color)'                       # Knob On
-      paper-slider-knob-start-color: 'var(--text-medium-light-color)'                 # Knob Off
-      
-      # Shadows
-      ha-card-box-shadow: 'inset 0px 0px 0px 1px var(--border-color)'
