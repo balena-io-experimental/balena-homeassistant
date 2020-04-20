@@ -114,7 +114,7 @@ sensor:
   - platform: google_wifi
     host: 192.168.86.1
   - platform: worldclock
-    time_zone: !env_var TZ
+    time_zone: Europe/Copenhagen 
   - platform: yr
     name: Weather
     forecast: 24
