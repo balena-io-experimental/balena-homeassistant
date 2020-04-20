@@ -9,6 +9,11 @@ frontend:
   javascript_version: latest
   themes: !include_dir_merge_named ./themes
 
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
 # Text to speech
 tts:
   - platform: google_translate
@@ -54,9 +59,8 @@ input_boolean:
   stuen_audio_state:
 
 spotcast:
-  username: !env_var SPOTIFY_ID 
-  password: !env_var SPOTIFY_TOKEN
-  device_id: Stuen Audio
+  username: !env_var SPOTIFY_DEVICE_ID 
+  password: !env_var SPOTIFY_DEVICE_PASSWORD
 
 # TODO: Switch to lovelace: https://github.com/dnguyen800/spotify-playlist-card
 spotify:
@@ -95,12 +99,6 @@ media_player:
       service: switch.turn_on
       data:
         entity_id: switch.stuen_audio
-    play_discover_weekly:
-      service: media_player.play_media
-      data_template:
-        entity_id: media_player.stuen_audio
-        media_content_id: https://open.spotify.com/playlist/37i9dQZEVXcSERsyBdeqKD?si=KRMjs62JTAmpGmvL-nFXqg
-        media_content_type: playlist
   attributes:
     state: switch.stuen_audio
     is_volume_muted: media_player.stuen_audio|is_volume_muted
@@ -108,10 +106,6 @@ media_player:
     source: media_player.stuen_audio|source
     source_list: media_player.stuen_audio|source_list
 
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
 
 sensor:
   - platform: systemmonitor
@@ -125,7 +119,7 @@ sensor:
   - platform: google_wifi
     host: 192.168.86.1
   - platform: worldclock
-    time_zone: Europe/Copenhagen 
+    time_zone: US/Central 
   - platform: yr
     name: Weather
     forecast: 24
