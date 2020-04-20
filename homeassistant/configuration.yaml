@@ -3,7 +3,7 @@ default_config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-  base_url: !nev_var BASE_URL 
+  base_url: !env_var BASE_URL 
   
 frontend:
   themes: !include_dir_merge_named ../themes
