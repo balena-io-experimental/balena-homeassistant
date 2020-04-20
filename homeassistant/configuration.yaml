@@ -6,8 +6,9 @@ http:
   base_url: !env_var BASE_URL 
   
 frontend:
-  themes: !include_dir_merge_named ../themes
-
+  javascript_version: latest
+  themes: !include ./themes
+ 
 # Text to speech
 tts:
   - platform: google_translate
