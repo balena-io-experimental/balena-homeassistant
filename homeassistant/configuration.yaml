@@ -44,7 +44,7 @@ calendar:
 cast:
   media_player:
     - host: 192.168.86.26
-    - host: 192.168.86.162
+    - host: 192.168.86.160
 
 homeassistant:
   customize:
@@ -62,7 +62,6 @@ spotcast:
   username: !env_var SPOTIFY_DEVICE_ID 
   password: !env_var SPOTIFY_DEVICE_PASSWORD
 
-# TODO: Switch to lovelace: https://github.com/dnguyen800/spotify-playlist-card
 spotify:
   client_id: !env_var SPOTIFY_ID 
   client_secret: !env_var SPOTIFY_TOKEN
