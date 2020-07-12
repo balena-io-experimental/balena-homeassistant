@@ -30,6 +30,11 @@ mqtt:
 ```
 (note that there must be two spaces before the word broker.) Here we are telling Home Assistant to enable MQTT, and providing the hostname of our local MQTT broker container (you could also provide the IP address of the local container or the IP address of any other reachable broker you might want to use.) Any time you change the configuration, you should go back to Home Assistant and use its configuration checker to make sure your changes do not contain any errors. If there are no errors, restart Home Assistant for your changes to take effect.
 
+## Configuring HASS Configurator
+Environment varibles can be used to configure the configurator. For example, to add basic HTTP authentication, the `HC_USERNAME` and `HC_PASSWORD` variables can be specified. The password in plain text or via SHA256 by prepending the hash with `{sha256}`. For more information on configurator variables visit: https://github.com/danielperna84/hass-configurator/wiki/Configuration
+
+Note that to specify any of these configuration variables as an environment variable they should be prepended with `HC_`.
+
 ## Integrate Home Assistant with balenaSense
 You can follow the [balenaSense tutorial](https://www.balena.io/blog/build-an-environment-and-air-quality-monitor-with-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
 
