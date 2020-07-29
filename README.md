@@ -31,7 +31,7 @@ We recommend this button as the de-facto method for deploying new apps on balena
 ## Configuring Home Assistant
 A text editor called Hass-Configurator is available locally on port 3218. Using this editor, you can make changes to the Home Assistant configuration file /hass-config/configuration.yaml which is the default folder for Hass-Configurator.
 
-You can enable MQTT in Home Assistant from the Configuration > Integrations menu or by adding the folloowing lines to configuration.yaml:
+You can enable MQTT in Home Assistant from the Configuration > Integrations menu or by adding the following lines to configuration.yaml:
 ```
 mqtt:  
   broker: mqtt
