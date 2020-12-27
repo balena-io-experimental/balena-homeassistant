@@ -36,9 +36,9 @@ services:
     volumes:
       - 'config:/data'
     environment:
-        - 'GF_SERVER_HTTP_PORT=8081'
-        - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
-        - 'GF_SESSION_PROVIDER=memory'
+      - 'GF_SERVER_HTTP_PORT=8081'
+      - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
+      - 'GF_SESSION_PROVIDER=memory'
   sensor:
     build: ./sensor
     privileged: true
@@ -60,3 +60,22 @@ services:
     ports:
       - 8000:8080
     restart: always
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    # network_mode: host
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+      - "8090:8090"
+    environment:
+      - TZ=Europe/Copenhagen
+      - WEBPASSWORD=$PIHOLE_WEBPASSWORD
+      - ServerIP=192.168.86.181
+      - WEB_PORT=8090
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped

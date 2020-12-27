@@ -28,24 +28,7 @@ speedtestdotnet:
 
 mqtt:  
   broker: mqtt
-  
-calendar:
-  - platform: todoist
-    token: !env_var TODOIST_TOKEN
-    custom_projects:
-      - name: 'Byggetilladelse'
-      - name: 'Home'
-        due_date_days: 7
-      - name: 'Due Today'
-        due_date_days: 0
-      - name: 'Due This Week'
-        due_date_days: 7
         
-cast:
-  media_player:
-    - host: 192.168.86.26
-    - host: 192.168.86.160
-
 homeassistant:
   customize:
     input_boolean.stuen_audio_state:
