@@ -1,4 +1,3 @@
-# sensors
 # balenaSense sensors added by script
 sensor:
   - platform: mqtt

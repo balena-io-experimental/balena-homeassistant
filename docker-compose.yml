@@ -1,7 +1,7 @@
-version: '2'
+version: "2"
 volumes:
-    pihole_config:
-    dnsmasq_config:
+    pihole_config_dir:
+    dnsmasq_config_dir:
     config:
 services:
   homeassistant:
@@ -10,42 +10,42 @@ services:
       - 80:8123
     privileged: true
     volumes:
-      - 'config:/config'
+      - "config:/config"
     restart: always
     devices:
       - "/dev:/dev"
       - "/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave"
     environment:
-      - TZ='Europe/Copenhagen'
+      - TZ="Europe/Copenhagen"
   hass-configurator:
     image: "causticlab/hass-configurator-docker:arm"
     restart: always
     volumes:
-      - 'config:/hass-config'
+      - "config:/hass-config"
     environment:
       - HC_BASEPATH=/hass-config
   influxdb:
     restart: always
     build: ./influxdb
     volumes:
-      - 'config:/data'
+      - "config:/data"
   grafana:
     restart: always
     build: ./grafana
     ports:
       - "8081"
     volumes:
-      - 'config:/data'
+      - "config:/data"
     environment:
-      - 'GF_SERVER_HTTP_PORT=8081'
-      - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
-      - 'GF_SESSION_PROVIDER=memory'
+      - "GF_SERVER_HTTP_PORT=8081"
+      - "GF_PATHS_PROVISIONING=/usr/src/app/provisioning"
+      - "GF_SESSION_PROVIDER=memory"
   sensor:
     build: ./sensor
     privileged: true
     restart: always
     volumes:
-      - 'config:/data'
+      - "config:/data"
   telegraf:
     build: ./telegraf
     restart: always
@@ -59,15 +59,15 @@ services:
   automation-api:
     image: nkuik89/automation-api:latest
     ports:
-      - 8000:8080
+      - "8000:8080"
     restart: always
   pihole:
     restart: always
     build: ./pihole
     privileged: true
     volumes:
-      - "pihole_config:/etc/pihole"
-      - "dnsmasq_config:/etc/dnsmasq.d"
+      - "pihole_config_dir:/etc/pihole"
+      - "dnsmasq_config_dir:/etc/dnsmasq.d"
     dns:
       - "127.0.0.1"
       - "1.1.1.1"
@@ -81,7 +81,6 @@ services:
     network_mode: host
     labels:
       io.balena.features.dbus: "1"
-
   # https://hub.docker.com/r/klutchell/unbound-dnscrypt
   unbound:
     build: ./unbound
