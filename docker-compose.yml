@@ -1,5 +1,7 @@
 version: '2'
 volumes:
+    pihole_config:
+    dnsmasq_config:
     config:
 services:
   homeassistant:
@@ -22,7 +24,6 @@ services:
       - 'config:/hass-config'
     environment:
       - HC_BASEPATH=/hass-config
-
   influxdb:
     restart: always
     build: ./influxdb
@@ -61,21 +62,28 @@ services:
       - 8000:8080
     restart: always
   pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
-    # network_mode: host
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
-      - "80:80/tcp"
-      - "443:443/tcp"
-      - "8090:8090"
+    restart: always
+    build: ./pihole
+    privileged: true
+    volumes:
+      - "pihole_config:/etc/pihole"
+      - "dnsmasq_config:/etc/dnsmasq.d"
+    dns:
+      - "127.0.0.1"
+      - "1.1.1.1"
     environment:
-      - TZ=Europe/Copenhagen
-      - WEBPASSWORD=$PIHOLE_WEBPASSWORD
-      - ServerIP=192.168.86.181
-      - WEB_PORT=8090
-    cap_add:
-      - NET_ADMIN
-    restart: unless-stopped
+      DNSMASQ_LISTENING: eth0
+      INTERFACE: eth0
+      DNS1: 127.0.0.1#5053
+      WEB_PORT: 8090
+    ports:
+      - "8090:8090"
+    network_mode: host
+    labels:
+      io.balena.features.dbus: "1"
+
+  # https://hub.docker.com/r/klutchell/unbound-dnscrypt
+  unbound:
+    build: ./unbound
+    ports:
+      - "5053:5053/udp"

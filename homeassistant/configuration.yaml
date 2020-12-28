@@ -1,18 +1,16 @@
-# Configure a default setup of Home Assistant (frontend, api, etc)
-default_config:
+homeassistant:
+  name: Home
+  unit_system: metric
+  time_zone: Europe/Copenhagen
+  external_url: !env_var HOMEASSISTANT_EXTERNAL_URL 
 
-# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-http:
-  base_url: !env_var BASE_URL 
-  
-frontend:
-  javascript_version: latest
-  themes: !include_dir_merge_named ./themes
+lovelace:
+  mode: yaml
 
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scenes.yaml
+# group: !include groups.yaml
+# automation: !include automations.yaml
+# script: !include scripts.yaml
+# scene: !include scenes.yaml
 
 # Text to speech
 tts:
@@ -28,66 +26,19 @@ speedtestdotnet:
 
 mqtt:  
   broker: mqtt
-        
-homeassistant:
-  customize:
-    input_boolean.stuen_audio_state:
-      hidden: true
-    media_player.stuen_audio:
-      hidden: true
-    media_player.stuen_audio:
-      friendly_name: Stuen Audio
+  
+cast:
+  media_player:
+    - host: 192.168.86.172
 
-input_boolean:
-  stuen_audio_state:
-
-spotcast:
-  username: !env_var SPOTIFY_DEVICE_ID 
-  password: !env_var SPOTIFY_DEVICE_PASSWORD
+sonos:
+  media_player:
+    hosts:
+      - 192.168.86.172
 
 spotify:
   client_id: !env_var SPOTIFY_ID 
   client_secret: !env_var SPOTIFY_TOKEN
-
-media_player:
-- platform: universal
-  name: Stuen Audio Player
-  state_template: >
-    {% if is_state('media_player.stuen_audio', 'idle') and is_state('input_boolean.stuen_audio_state', 'off') %}
-    off
-    {% else %}
-    {{ states('media_player.stuen_audio') }}
-    {% endif %}
-  children:
-    - media_player.stuen_audio
-  commands:
-    turn_on:
-      service: media_player.turn_on
-      data:
-        entity_id: media_player.stuen_audio
-    turn_off:
-      service: media_player.turn_off
-      data:
-        entity_id: media_player.stuen_audio
-    volume_up:
-      service: switch.turn_on
-      data:
-        entity_id: switch.stuen_audio
-    volume_down:
-      service: switch.turn_on
-      data:
-        entity_id: switch.stuen_audio
-    volume_mute:
-      service: switch.turn_on
-      data:
-        entity_id: switch.stuen_audio
-  attributes:
-    state: switch.stuen_audio
-    is_volume_muted: media_player.stuen_audio|is_volume_muted
-    volume_level: media_player.stuen_audio|volume_level
-    source: media_player.stuen_audio|source
-    source_list: media_player.stuen_audio|source_list
-
 
 sensor:
   - platform: systemmonitor
@@ -102,18 +53,6 @@ sensor:
     host: 192.168.86.1
   - platform: worldclock
     time_zone: US/Central 
-  - platform: yr
-    name: Weather
-    forecast: 24
-    monitored_conditions:
-      - temperature
-      - symbol
-      - precipitation
-      - windSpeed
-      - windDirection
-      - humidity
-      - fog
-      - cloudiness
   - platform: mqtt
     state_topic: "balena-sense/+/balena-sense"
     value_template: "{{ value_json.fields.humidity }}"
