@@ -1,7 +1,3 @@
-cast:
-  media_player:
-    - host: 192.168.86.182
-
 sonos:
   media_player:
     hosts:
@@ -19,17 +15,6 @@ spotify:
 # https://www.home-assistant.io/integrations/default_config/
 # Configure a default setup of Home Assistant (frontend, api, etc)
 #default_config:
-person:
-updater:
-zone:
-zeroconf:
-system_health:
-sun:
-ssdp:
-map:
-logbook:
-config:
-history:
 logger:
   default: info
 
@@ -41,14 +26,6 @@ logger:
 # https://www.home-assistant.io/docs/configuration/customizing-devices/
 #https://home-assistant.io/docs/configuration/basic/
 homeassistant:
-  auth_providers: 
-   - type: homeassistant
-   #- type: legacy_api_password
-   - type: trusted_networks
-     trusted_networks:
-       - 127.0.0.1
-       - ::1
-       - fd00::/8
   temperature_unit: C
   name: Home
   unit_system: metric
@@ -59,19 +36,6 @@ homeassistant:
   # packages: !include_dir_named packages
   # whitelist_external_dirs:
   #   - /config
-
-####################################################
-#                                                  #
-#                     HTTP                         #
-#                                                  #
-####################################################
-# https://www.home-assistant.io/integrations/http/
-http:
-  #base_url: https://nomescelto.duckdns.org:8123
-  ssl_certificate: /ssl/fullchain.pem
-  ssl_key: /ssl/privkey.pem
-  ip_ban_enabled: True
-  login_attempts_threshold: 5
 
 ####################################################
 #                                                  #
@@ -279,6 +243,8 @@ lovelace:
     - url: /hacsfiles/custom-sidebar/custom-sidebar.js
       type: module
     - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /config/themes/mini-media-player-bundle.js?v=1.11.0
       type: module
 
 
