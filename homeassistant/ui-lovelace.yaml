@@ -1,8 +1,6 @@
 views:
   - title: main
     cards:
-      - type: custom:mini-media-player
-        entity: media_player.stue_stereo
       - type: vertical-stack
         cards:
           - entity: weather.home
