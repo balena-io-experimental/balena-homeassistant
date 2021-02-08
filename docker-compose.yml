@@ -14,7 +14,7 @@ services:
       - "/dev:/dev"
       - "/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave"
   mqtt:
-    image: arm32v6/eclipse-mosquitto
+    image: arm32v6/eclipse-mosquitto@sha256:ec3e1dbb9e198ff04d62c2d0f6eff74cad7438c7d080b89a28428fb96c8479c4
     ports:
       - "1883:1883"
     restart: always
