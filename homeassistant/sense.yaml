@@ -2,12 +2,12 @@
 # balenaSense sensors added by script
 sensor:
   - platform: mqtt
-    state_topic: "balena-sense/+/balena-sense"
+    state_topic: "sensors"
     value_template: "{{ value_json.fields.humidity }}"
     name: "sense_humidity"
     unit_of_measurement: "%"
   - platform: mqtt
-    state_topic: "balena-sense/+/balena-sense"
+    state_topic: "sensors"
     value_template: "{{ value_json.fields.temperature }}"
     name: "sense_temperature_c"
     unit_of_measurement: "degrees"

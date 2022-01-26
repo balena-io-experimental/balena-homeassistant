@@ -1,9 +1,12 @@
 # Balena Home Assistant
-Home Assistant with balenaSense using MQTT
+Home Assistant on balena! Why?
+- Easy, secure remote access out of the box - no changes to your router required
+- Headless deploy process - no hunting for your device
+- Run on a minimal OS optimized for containers
+- Device dashboard and SSH access via balenaCloud
+- Easy to run additional containers/services alongside Home Assistant 
 
-A full step-by-step tutorial is available here: [https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/](https://www.balena.io/blog/monitor-air-quality-around-your-home-with-home-assistant-and-balena/)
-
-[Home Assistant](https://www.home-assistant.io/) is a popular open source home automation system that is often run from low-cost devices like a Raspberry Pi. Here’s how to use balenaSense to push its sensor data to Home Assistant using MQTT.
+[Home Assistant](https://www.home-assistant.io/) is a popular open source home automation system that is often run from low-cost devices like a Raspberry Pi. This project provides a bare-minimum install using balena, along with some examples on how to extend your installation and integrate with other projects such as [balenaSense](https://github.com/balenalabs/balena-sense)
 
 ## Hardware required
 Here’s the list of items required for a basic setup:
@@ -26,7 +29,7 @@ Running this project is as simple as deploying it to a balenaCloud application, 
 
 [![](https://balena.io/deploy.png)](https://dashboard.balena-cloud.com/deploy)
 
-We recommend this button as the de-facto method for deploying new apps on balenaCloud, but as an alternative, you can set this project up with the repo and balenaCLI if you choose. Get the code from this repo, and set up [balenaCLI](https://github.com/balena-io/balena-cli) on your computer to push the code to balenaCloud and your devices. [Read more](https://www.balena.io/docs/learn/deploy/deployment/).
+We recommend this button as the de-facto method for deploying new apps on balenaCloud, especially if you are just getting started or want to test out the project. However, if you want to modify the docker-compose or tinker with the code, you'll need to clone this repo and use the [balenaCLI](https://github.com/balena-io/balena-cli) to push to your devices. This can be done later if you initially deploy using the button above. [Read more](https://www.balena.io/docs/learn/deploy/deployment/).
 
 ## Configuring Home Assistant
 A text editor called Hass-Configurator is available locally on port 3218. Using this editor, you can make changes to the Home Assistant configuration file /hass-config/configuration.yaml which is the default folder for Hass-Configurator.
@@ -44,9 +47,11 @@ Environment varibles can be used to configure the configurator. For example, to 
 Note that to specify any of these configuration variables as an environment variable they should be prepended with `HC_`.
 
 ## Integrate Home Assistant with balenaSense
-You can follow the [balenaSense tutorial](https://www.balena.io/blog/build-an-environment-and-air-quality-monitor-with-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
+You can follow the [balenaSense tutorial](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
 
-Add a device variable to your balenaSense device in the balenaCloud dashboard. In the “Add variable” popup, for “NAME” enter TELEGRAF_MQTT_URL_PORT and then paste the IP from your Home Assistant application into the “VALUE” box. Append :1883 after the address which is the port number. After clicking "Add" balenaSense will restart and begin publishing its sensor data to Home Assistant.
+The balenaSense tutorial also has a section about [Home Assistant integration](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/#integration-with-home-assistant-span-idhome-assistantspan). To summarize:
+
+Add an `MQTT_ADDRESS` device variable to your balenaSense project with a value of your Home Assistant device's IP address. Make sure MQTT is enabled as described above. 
 
 Before we can actually see the sensors in Home Assistant, we need to add them to the configuration.yaml file. You can see the sensors we want to add by opening the file /hass-config/sense.yaml in the configuration editor. Copy the full contents of this file and paste into the bottom of the configuration.yaml file.
 
