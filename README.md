@@ -36,9 +36,9 @@ We recommend this button as the de-facto method for deploying new apps on balena
 Our project's docker-compose file creates a persistent volume on your disk/SD card for storing Home Assistant configuration files. These are located in the `/config` folder.
 
 ## Configuring Home Assistant
-A text editor called Hass-Configurator is available locally on port 3218. Using this editor, you can make changes to the Home Assistant configuration file `/hass-config/configuration.yaml` which is the default folder for Hass-Configurator. (`hass-config` is mapped to `/config`)
+A text editor called Hass-Configurator is available locally on port 3218. (To access this: http://192.168.1.120:3218 - but substitute the local IP address of your Home Assistant) Using this editor, you can make changes to the Home Assistant configuration file `/hass-config/configuration.yaml` which is the default folder for Hass-Configurator. (`hass-config` is mapped to `/config`)
 
-You can enable MQTT in Home Assistant from the Configuration > Devices & Services menu or by adding the following lines to configuration.yaml:
+You can enable MQTT in Home Assistant from the Configuration > Devices & Services > Add Integration button (for "broker" enter `mqtt`) or by adding the following lines to configuration.yaml:
 ```
 mqtt:  
   broker: mqtt
@@ -57,42 +57,86 @@ The balenaSense tutorial also has a section about [Home Assistant integration](h
 
 Using the balenaCloud dashboard, add an `MQTT_ADDRESS` device variable to your balenaSense project's "sensor" service with a value of your Home Assistant device's IP address. Make sure MQTT is enabled as described above. 
 
-Before we can actually see the sensors in Home Assistant, we need to add them to the configuration.yaml file in the "sensor" section. The sensor values from balenaSense will have the MQTT topic of `sensors` (unless you've changed it) and each value will have a separate name, depending on the type of sensor. For instance, the sensor value names for a bme680 would be: temperature, pressure, humidity and resistance.  To get the names of all your available sensor values, look at the names above the values in your balenaSense dashboard. Using the HASS Configurator, open the configuration.yaml file and add the sensors under the `sensor:` section. (If that section does not exist, you can add it.) For instance, for a bme680, you should have the following:
+Before we can actually see the sensors in Home Assistant, we need to add them to the configuration.yaml file in the "sensor" section. The sensor values from balenaSense will have the MQTT topic of `sensors` (unless you've changed it) and each value will have a separate name, depending on the type of sensor. For instance, the sensor value names for a bme680 would be: temperature, pressure, humidity and resistance.  To get the names of all your available sensor values, look at the names above the values in your balenaSense dashboard. 
+
+Using the HASS Configurator, open the configuration.yaml file and add the sensors under the `sensor:` section. (If that section does not exist, you can add it.) For instance, for a bme680, you should have the following:
 
 ```
+sensor:
   - platform: mqtt
     state_topic: "sensors"
-    value_template: "{{ value_json.fields.humidity }}"
+    value_template: "{{ value_json.humidity }}"
     name: "sense_humidity"
     unit_of_measurement: "%"
   - platform: mqtt
     state_topic: "sensors"
-    value_template: "{{ value_json.fields.temperature }}"
+    value_template: "{{ value_json.temperature }}"
     name: "sense_temperature_c"
     unit_of_measurement: "degrees"
   - platform: mqtt
     state_topic: "sensors"
-    value_template: "{{ ((float(value_json.fields.temperature) * 9 / 5) + 32) | round(1) }}"
+    value_template: "{{ ((float(value_json.temperature) * 9 / 5) + 32) | round(1) }}"
     name: "sense_temperature_f"
     unit_of_measurement: "degrees"
   - platform: mqtt
     state_topic: "sensors"
-    value_template: "{{ value_json.fields.pressure }}"
+    value_template: "{{ value_json.pressure }}"
     name: "sense_pressure"
     unit_of_measurement: "mbar"
 ```
     
 Save the file and restart Home Assistant for the changes to take effect.
 
-If you don't need a full balenaSense installation but want to integrate a sensor directly with Home Assistant, follow our guide for including the sensor block in your project.
+If you don't need a full balenaSense installation but want to integrate a sensor directly with Home Assistant, follow our guide for [including the sensor block](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/#use-a-sensor-attached-to-your-device-running-home-assistant-on-balenaos-span-idsensorspan) in your project.
 
 ## Other integrations
 
+Because we're running containers on balenaOS, it's easy to add complementary services to your project by simply adding them to your docker-compose file. Below are a few of our favorites that work well with Home Assistant. Note that you'll need to clone this repository and use the [balenaCLI](https://github.com/balena-io/balena-cli) to push your updated project to your fleet of devices. 
+
 ### Frigate
-
+Frigate is a full featured NVR (Network Video Recorder) that integrates well with Home Assistant. To see an example of a balena Frigate project you can add to this project, check out [this repository](https://github.com/klutchell/balena-frigate).
+ 
 ### AppDaemon/HADashboard
+[AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) is an environment for creating Python automations for Home Assistant, but it also includes [HADashboard](https://appdaemon.readthedocs.io/en/latest/DASHBOARD_INSTALL.html) - a beautiful dashboard for Home Assistant that is intended to be displayed on a wall mounted monitor. (HADashboard does not require any Python programming!) To include this functionality, simply add the following to your docker-compose. You can access your dashboards on port 5050 (for instance http://192.168.1.120:5050 - but substitute the local IP address of your Home Assistant)
 
-### 
+```
+  appdaemon:
+    container_name: app-daemon
+    image: acockburn/appdaemon:latest
+    ports:
+      - "5050:5050"
+    volumes:
+      - config:/conf
+    restart: always
+    depends_on:
+      - homeassistant
+```
+
+Once you have added the above to your docker-compose file, re-push the application using the CLI. Next, you'll need to use the HASS Configurator to edit the `appdaemon.yaml` file in `hass-config`. Here is a sample to get you started:
+
+```
+appdaemon:
+  latitude: 0
+  longitude: 0
+  elevation: 30
+  time_zone: Europe/Berlin
+  plugins:
+    HASS:
+      type: hass
+      ha_url: http://192.168.1.120
+      token: <your token>
+http:
+  url: http://192.168.1.120:5050
+admin:
+api:
+hadashboard:
+  dash_url: http://192.168.1.120:5050
+```
+
+You'll need to substitute the IP address of your device, and create a "Long-Lived Access Token" in Home Assistant by navigating to your profile page, scrolling down, and clicking the "Create Token" button. Use that (very long) value in place of `<your token>`.
+
+### Grafana and InfluxDB
+InfluxDB is a comprehensive time-series database and Grafana is a complentary graphing package to build and display dashboards. Home Assistant can be configured to store its data in InfluxDB. See [this repo](https://github.com/klutchell/balena-homeassistant#influxdb--grafana) for an example of incorporating InfluxDB and Grafana into your project. 
 
 ### Get it going and let us know what you think
 Once you have the project up and running, experiment with different setups and configurations to suit your needs! As always, if you run into any problems or have any questions or suggestions, reach out to us on [the forums](https://forums.balena.io/), [Twitter](https://twitter.com/balena_io?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor) or [Facebook](https://www.facebook.com/balenacloud/).
