@@ -6,7 +6,7 @@ Home Assistant on balena! Why?
 - Device dashboard and SSH access via balenaCloud
 - Easy to run additional containers/services alongside Home Assistant 
 
-[Home Assistant](https://www.home-assistant.io/) is a popular open source home automation system that is often run from low-cost devices like a Raspberry Pi. This project provides a bare-minimum install using balena, along with some examples on how to extend your installation and integrate with other projects such as [balenaSense](https://github.com/balenalabs/balena-sense)
+[Home Assistant](https://www.home-assistant.io/) is a popular open source home automation system that is often run from low-cost devices like a Raspberry Pi. This project provides a bare-minimum install using balena, along with some examples of how to extend your installation and integrate with other projects such as [balenaSense](https://github.com/balenalabs/balena-sense)
 
 ## Hardware required
 Here’s the list of items required for a basic setup:
@@ -19,8 +19,8 @@ Here’s the list of items required for a basic setup:
 ## Software required
 This repository contains all of the software and configuration you’ll need to get started. We’re going to deploy this project on balenaCloud using a free account to push the project and all the software to your Raspberry Pi as well as to provide remote access. Therefore, you’ll need:
 
-* A tool to flash your SD card, such as balenaEtcher
-* A free balenaCloud account
+* A tool to flash your SD card, such as [balenaEtcher](https://www.balena.io/etcher/)
+* A free [balenaCloud](https://dashboard.balena-cloud.com/login) account
 * A clone or download of our project from GitHub
 
 ## Software setup
@@ -31,12 +31,15 @@ Running this project is as simple as deploying it to a balenaCloud application, 
 
 We recommend this button as the de-facto method for deploying new apps on balenaCloud, especially if you are just getting started or want to test out the project. However, if you want to modify the docker-compose or tinker with the code, you'll need to clone this repo and use the [balenaCLI](https://github.com/balena-io/balena-cli) to push to your devices. This can be done later if you initially deploy using the button above. [Read more](https://www.balena.io/docs/learn/deploy/deployment/).
 
+### First login
+pub url
+
 ## File Locations
 
 Our project's docker-compose file creates a persistent volume on your disk/SD card for storing Home Assistant configuration files. These are located in the `/config` folder.
 
 ## Configuring Home Assistant
-A text editor called Hass-Configurator is available locally on port 3218. (To access this: http://192.168.1.120:3218 - but substitute the local IP address of your Home Assistant) Using this editor, you can make changes to the Home Assistant configuration file `/hass-config/configuration.yaml` which is the default folder for Hass-Configurator. (`hass-config` is mapped to `/config`)
+A text editor called Hass-Configurator is available locally on port 3218. (To access this: http://192.168.1.120:3218 - but substitute the local IP address of your Home Assistant) Using this editor, you can make changes to the Home Assistant configuration file `configuration.yaml` which is the in the default folder `hass-config` for Hass-Configurator. (`hass-config` is mapped to `/config`)
 
 You can enable MQTT in Home Assistant from the Configuration > Devices & Services > Add Integration button (for "broker" enter `mqtt`) or by adding the following lines to configuration.yaml:
 ```
@@ -46,7 +49,7 @@ mqtt:
 (note that there must be two spaces before the word broker.) Here we are telling Home Assistant to enable MQTT, and providing the hostname of our local MQTT broker container (you could also provide the IP address of the local container or the IP address of any other reachable broker you might want to use.) Any time you change the configuration, you should go back to Home Assistant and use its configuration checker to make sure your changes do not contain any errors. If there are no errors, restart Home Assistant for your changes to take effect.
 
 ## Configuring HASS Configurator
-Environment varibles can be used to configure the configurator. For example, to add basic HTTP authentication, the `HC_USERNAME` and `HC_PASSWORD` variables can be specified. The password in plain text or via SHA256 by prepending the hash with `{sha256}`. For more information on configurator variables visit: https://github.com/danielperna84/hass-configurator/wiki/Configuration
+[Environment variables]([environment variable](https://www.balena.io/docs/learn/manage/variables/)) can be used to configure the configurator. For example, to add basic HTTP authentication, the `HC_USERNAME` and `HC_PASSWORD` variables can be specified. The password in plain text or via SHA256 by prepending the hash with `{sha256}`. For more information on configurator variables visit: https://github.com/danielperna84/hass-configurator/wiki/Configuration
 
 Note that to specify any of these configuration variables as an environment variable they should be prepended with `HC_`.
 
@@ -57,9 +60,9 @@ The balenaSense tutorial also has a section about [Home Assistant integration](h
 
 Using the balenaCloud dashboard, add an `MQTT_ADDRESS` device variable to your balenaSense project's "sensor" service with a value of your Home Assistant device's IP address. Make sure MQTT is enabled as described above. 
 
-Before we can actually see the sensors in Home Assistant, we need to add them to the configuration.yaml file in the "sensor" section. The sensor values from balenaSense will have the MQTT topic of `sensors` (unless you've changed it) and each value will have a separate name, depending on the type of sensor. For instance, the sensor value names for a bme680 would be: temperature, pressure, humidity and resistance.  To get the names of all your available sensor values, look at the names above the values in your balenaSense dashboard. 
+Before we can actually see the sensors in Home Assistant, we need to add them to the configuration.yaml file in the "sensor" section. The sensor values from balenaSense will have the MQTT topic of `sensors` and each value will have a separate name, depending on the type of sensor. For instance, the sensor value names for a bme680 would be: temperature, pressure, humidity and resistance.  To get the names of all your available sensor values, look at the names above the values in your balenaSense dashboard. 
 
-Using the HASS Configurator, open the configuration.yaml file and add the sensors under the `sensor:` section. (If that section does not exist, you can add it.) For instance, for a bme680, you should have the following:
+Using the HASS Configurator, open the configuration.yaml file and add the sensors under the `sensor:` section. (If that section does not exist, you can add it.) We'll use the Home Assistant mqtt sensor platform and a json value_template syntax as shown in the following example for a bme 680:
 
 ```
 sensor:
@@ -91,10 +94,10 @@ If you don't need a full balenaSense installation but want to integrate a sensor
 
 ## Other integrations
 
-Because we're running containers on balenaOS, it's easy to add complementary services to your project by simply adding them to your docker-compose file. Below are a few of our favorites that work well with Home Assistant. Note that you'll need to clone this repository and use the [balenaCLI](https://github.com/balena-io/balena-cli) to push your updated project to your fleet of devices. 
+Because we're running containers on balenaOS, it's easy to [add complementary services](https://www.balena.io/blog/two-projects-one-device-turn-your-raspberry-pi-into-a-multitool/) to your project by simply adding them to your docker-compose file. Below are a few of our favorites that work well with Home Assistant. Note that to add these services, you'll need to clone and edit this repository then use the [balenaCLI](https://github.com/balena-io/balena-cli) to push your updated project to your fleet of devices. 
 
 ### Frigate
-Frigate is a full featured NVR (Network Video Recorder) that integrates well with Home Assistant. To see an example of a balena Frigate project you can add to this project, check out [this repository](https://github.com/klutchell/balena-frigate).
+Frigate is a full featured NVR (Network Video Recorder) that integrates nicely with Home Assistant. Check out [this repository](https://github.com/klutchell/balena-frigate) for an example of Frigate running on balena. You could merge the services of that project's docker-compose (except MQTT because we already included it) with this project, as well as copy over the folders and files.
  
 ### AppDaemon/HADashboard
 [AppDaemon](https://appdaemon.readthedocs.io/en/latest/index.html) is an environment for creating Python automations for Home Assistant, but it also includes [HADashboard](https://appdaemon.readthedocs.io/en/latest/DASHBOARD_INSTALL.html) - a beautiful dashboard for Home Assistant that is intended to be displayed on a wall mounted monitor. (HADashboard does not require any Python programming!) To include this functionality, simply add the following to your docker-compose. You can access your dashboards on port 5050 (for instance http://192.168.1.120:5050 - but substitute the local IP address of your Home Assistant)
@@ -136,7 +139,7 @@ hadashboard:
 You'll need to substitute the IP address of your device, and create a "Long-Lived Access Token" in Home Assistant by navigating to your profile page, scrolling down, and clicking the "Create Token" button. Use that (very long) value in place of `<your token>`.
 
 ### Grafana and InfluxDB
-InfluxDB is a comprehensive time-series database and Grafana is a complentary graphing package to build and display dashboards. Home Assistant can be configured to store its data in InfluxDB. See [this repo](https://github.com/klutchell/balena-homeassistant#influxdb--grafana) for an example of incorporating InfluxDB and Grafana into your project. 
+InfluxDB is a comprehensive time-series database and Grafana is a complentary graphing package to build and display dashboards. Home Assistant can be configured to store its data in InfluxDB. See [this repo](https://github.com/klutchell/balena-homeassistant#influxdb--grafana) for an example of incorporating InfluxDB and Grafana into your Home Assistant project. You'll then need to follow the instructions [here](https://www.home-assistant.io/integrations/influxdb) to complete the integration.
 
 ### Get it going and let us know what you think
 Once you have the project up and running, experiment with different setups and configurations to suit your needs! As always, if you run into any problems or have any questions or suggestions, reach out to us on [the forums](https://forums.balena.io/), [Twitter](https://twitter.com/balena_io?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor) or [Facebook](https://www.facebook.com/balenacloud/).
