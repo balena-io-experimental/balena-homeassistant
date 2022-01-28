@@ -32,7 +32,7 @@ Running this project is as simple as deploying it to a balenaCloud application, 
 We recommend this button as the de-facto method for deploying new apps on balenaCloud, especially if you are just getting started or want to test out the project. However, if you want to modify the docker-compose or tinker with the code, you'll need to clone this repo and use the [balenaCLI](https://github.com/balena-io/balena-cli) to push to your devices. This can be done later if you initially deploy using the button above. [Read more](https://www.balena.io/docs/learn/deploy/deployment/).
 
 ### First login
-pub url
+To access your new Home Assistant instance, browse to the IP address of your device. You can find the device's IP address in your balenaCloud dashboard. Go through the Home Assistant setup process and establish a username and password. To obtain a secure public URL for your Home Assistant instance, simply click the "Public Device URL" switch on your balenaCloud dashboard. You'll then see a link to access your unique device URL.
 
 ## File Locations
 
