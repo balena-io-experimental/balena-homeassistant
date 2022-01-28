@@ -41,7 +41,7 @@ Our project's docker-compose file creates a persistent volume on your disk/SD ca
 ## Configuring Home Assistant
 A text editor called Hass-Configurator is available locally on port 3218. (To access this: http://192.168.1.120:3218 - but substitute the local IP address of your Home Assistant) Using this editor, you can make changes to the Home Assistant configuration file `configuration.yaml` which is the in the default folder `hass-config` for Hass-Configurator. (`hass-config` is mapped to `/config`)
 
-You can enable MQTT in Home Assistant from the Configuration > Devices & Services > Add Integration button (for "broker" enter `mqtt`) or by adding the following lines to configuration.yaml:
+You can [enable MQTT](https://www.home-assistant.io/integrations/mqtt/) in Home Assistant from the Configuration > Devices & Services > Add Integration button (for "broker" enter `mqtt`) or by adding the following lines to configuration.yaml:
 ```
 mqtt:  
   broker: mqtt
@@ -139,7 +139,22 @@ hadashboard:
 You'll need to substitute the IP address of your device, and create a "Long-Lived Access Token" in Home Assistant by navigating to your profile page, scrolling down, and clicking the "Create Token" button. Use that (very long) value in place of `<your token>`.
 
 ### Grafana and InfluxDB
-InfluxDB is a comprehensive time-series database and Grafana is a complentary graphing package to build and display dashboards. Home Assistant can be configured to store its data in InfluxDB. See [this repo](https://github.com/klutchell/balena-homeassistant#influxdb--grafana) for an example of incorporating InfluxDB and Grafana into your Home Assistant project. You'll then need to follow the instructions [here](https://www.home-assistant.io/integrations/influxdb) to complete the integration.
+[InfluxDB](https://www.influxdata.com/) is a comprehensive time-series database and [Grafana](https://grafana.com/) is a complentary graphing package to build and display dashboards. Home Assistant can be configured to store some or all of its data in InfluxDB. The Grafana dashboards are well suited to displaying chages in sensor and other values over time, as opposed to current values and more binary information displayed by HADashboard. See [this repo](https://github.com/klutchell/balena-homeassistant) for an example of incorporating InfluxDB and Grafana into your Home Assistant project using balena. At a minimum, you'll need to add the following lines to your docker-compose file:
+```
+  influxdb:
+    image: influxdb:1.8.6
+    volumes:
+      - influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:8.1.2
+    volumes:
+      - grafana:/var/lib/grafana
+    ports:
+        - 3000:3000/tcp
+```       
+
+After pushing the updated project to your device using the CLI, you'll need to set up the Influx database and then instruct Home Assistant to use it as outlined [here](https://github.com/klutchell/balena-homeassistant#influxdb--grafana). You can also check out the official integration instructions [here](https://www.home-assistant.io/integrations/influxdb) for more information. Grafana will then be available on port 3000 and you can start designing your own dashboards.
 
 ### Get it going and let us know what you think
 Once you have the project up and running, experiment with different setups and configurations to suit your needs! As always, if you run into any problems or have any questions or suggestions, reach out to us on [the forums](https://forums.balena.io/), [Twitter](https://twitter.com/balena_io?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor) or [Facebook](https://www.facebook.com/balenacloud/).
