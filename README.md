@@ -53,6 +53,37 @@ mqtt:
 
 Note that to specify any of these configuration variables as an environment variable they should be prepended with `HC_`.
 
+### Home automation with Zigbee and Z-Wave
+To unleash the full power of Home Assistant, you'll want to add the ability to control and automate lights, locks, sensors etc... by adding radio-controlled equipment to your installation. Two of the popular protocols for radio-controlled devices are Zigbee and [Z-Wave](https://www.z-wave.com/). These are not compatible systems, so it's best to choose one and stick with it.
+
+## Z-Wave
+To control devices using Z-Wave you'll need a compatible gateway device, as well as one or more Z-Wave lights, switches, outlets, etc... More information about these devices can be found [here](https://www.home-assistant.io/integrations/zwave_js/). To use the Home Assistant recommended Z-Wave JS integration, you'll need to plug your gateway (We used a Aeotec Z-Stick Gen5 for our testing) into the device's USB port, and then add a JS server to your docker-compose similar to this:
+
+```
+  zjs:
+    container_name: zjs
+    image: kpine/zwave-js-server:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      USB_PATH: "/dev/ttyACM0"
+      S0_LEGACY_KEY: "27DAB0C1BAD5DABFF74E4B5274E257C3"
+    volumes:
+      - cache:/cache
+    ports:
+      - '3000:3000' 
+```
+
+You'll also need to add `cache:` to the volumes section of the file to use the above example. (More information about this container setup can be found [here](https://hub.docker.com/r/kpine/zwave-js-server).) Note that you will need to generate a random `S0_LEGACY_KEY` and possibly other keys as well - see the linked container documentation. For the `USB_PATH:` you will need to know the device name for your Z-Wave gateway hardware. `/dev/ttyACM0` is a typical value, but you can ssh into the HostOS and run `ls /dev` to see a list of devices. You may need to compare the list with the gateway plugged in and not plugged in to determine the name.
+
+Once you've updated the docker-compose file, push the updated project to your fleet using the balenaCLI.
+
+To complete the Z-Wave setup, you'll need to use the Home Assistant UI and select configuration > Devices & Services > + add integration > Z-Wave JS. For the URL, enter `ws://zjs:3000` and you should receive a "Success!" message.
+
+### Zigbee
+
+Setup information coming soon!
+
 ## Integrate Home Assistant with balenaSense
 You can follow the [balenaSense tutorial](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
 
@@ -151,10 +182,89 @@ You'll need to substitute the IP address of your device, and create a "Long-Live
     volumes:
       - grafana:/var/lib/grafana
     ports:
-        - 3000:3000/tcp
+        - 3010:3000/tcp
 ```       
 
-After pushing the updated project to your device using the CLI, you'll need to set up the Influx database and then instruct Home Assistant to use it as outlined [here](https://github.com/klutchell/balena-homeassistant#influxdb--grafana). You can also check out the official integration instructions [here](https://www.home-assistant.io/integrations/influxdb) for more information. Grafana will then be available on port 3000 and you can start designing your own dashboards.
+You'll also need to add these lines to the "volumes:" section:
+```
+    influxdb:
+    grafana:
+```
+
+After pushing the updated project to your device using the CLI, you'll need to set up the Influx database and then instruct Home Assistant to use it as outlined [here](https://github.com/klutchell/balena-homeassistant#influxdb--grafana). You can also check out the official integration instructions [here](https://www.home-assistant.io/integrations/influxdb) for more information. Grafana will then be available on port 3010 and you can start designing your own dashboards. (Note that we re-mapped Grafana from its usual port of 3000 to avoid conflict with Z-Wave JS)
+
+After you log into Grafana, you'll need to set up a data source on which to base your dashboards. When setting up a data source, use `http://influxdb:8086` as the HTTP URL and `homeassistant` as the database name.
+
+## Putting it all together
+Here is an example of merging many of the integrations mentioned above into one docker-compose.yaml file:
+
+```
+version: '2'
+volumes:
+    config:
+    mosquitto:
+    influxdb:
+    grafana:
+    cache:
+services:
+  homeassistant:
+    build: homeassistant
+    ports:
+      - 80:8123
+    privileged: true
+    volumes:
+      - 'config:/config'
+      - 'cache:/mycache'
+    restart: always
+  mqtt:
+    build: mqtt
+    ports:
+      - "1883:1883"
+    restart: always
+    volumes:
+      - mosquitto:/mosquitto/data
+  hass-configurator:
+    image: "causticlab/hass-configurator-docker:arm"
+    restart: always
+    ports:
+      - "3218:3218"
+    volumes:
+      - 'config:/hass-config'
+    environment:
+      - HC_BASEPATH=/hass-config
+  appdaemon:
+    container_name: app-daemon
+    image: acockburn/appdaemon:latest
+    ports:
+      - "5050:5050"
+    volumes:
+      - config:/conf
+    restart: always
+    depends_on:
+      - homeassistant
+  influxdb:
+    image: influxdb:1.8.6
+    volumes:
+      - influxdb:/var/lib/influxdb
+  grafana:
+    image: grafana/grafana:8.1.2
+    volumes:
+      - grafana:/var/lib/grafana
+    ports:
+        - 3010:3000/tcp    
+  zjs:
+    container_name: zjs
+    image: kpine/zwave-js-server:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      USB_PATH: "/dev/ttyACM0"
+      S0_LEGACY_KEY: "27DAB0C1BAD5DABFF74E4B5274E257C3"
+    volumes:
+      - cache:/cache
+    ports:
+      - '3000:3000' 
+```
 
 ### Get it going and let us know what you think
 Once you have the project up and running, experiment with different setups and configurations to suit your needs! As always, if you run into any problems or have any questions or suggestions, reach out to us on [the forums](https://forums.balena.io/), [Twitter](https://twitter.com/balena_io?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor) or [Facebook](https://www.facebook.com/balenacloud/).
