@@ -53,10 +53,10 @@ mqtt:
 
 Note that to specify any of these configuration variables as an environment variable they should be prepended with `HC_`.
 
-### Home automation with Zigbee and Z-Wave
-To unleash the full power of Home Assistant, you'll want to add the ability to control and automate lights, locks, sensors etc... by adding radio-controlled equipment to your installation. Two of the popular protocols for radio-controlled devices are Zigbee and [Z-Wave](https://www.z-wave.com/). These are not compatible systems, so it's best to choose one and stick with it.
+## Home automation with Zigbee and Z-Wave
+To unleash the full power of Home Assistant, you can add the ability to control and automate lights, locks, sensors etc... by adding radio-controlled equipment to your installation. Two of the popular protocols for radio-controlled devices are Zigbee and [Z-Wave](https://www.z-wave.com/). These are not compatible systems, so it's best to choose one and stick with it.
 
-## Z-Wave
+### Z-Wave
 To control devices using Z-Wave you'll need a compatible gateway device, as well as one or more Z-Wave lights, switches, outlets, etc... More information about these devices can be found [here](https://www.home-assistant.io/integrations/zwave_js/). To use the Home Assistant recommended Z-Wave JS integration, you'll need to plug your gateway (We used a Aeotec Z-Stick Gen5 for our testing) into the device's USB port, and then add a JS server to your docker-compose similar to this:
 
 ```
