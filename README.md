@@ -82,7 +82,7 @@ To complete the Z-Wave setup, you'll need to use the Home Assistant UI and selec
 
 ### Zigbee
 
-Setup information coming soon!
+Like for z-wave, you'll need a gateway device to connect to zigbee devices. Zigbee call this a co-ordinator. We used a [Sonoff Dongle Plus](https://sonoff.tech/product/diy-smart-switch/sonoff-dongle-plus/) during testing, which we had to flash the firmware on the dongle before it could be used. We found the instructions on the [blakadder Compatibility Repository](https://zigbee.blakadder.com/Sonoff_ZBDongle-P.html) easy to follow. One the co-ordinator is flashed and ready to us, plug it into a USB port on the device running Home Assistant. Then go into the Home Assistant UI, into the Configuration page, Integrations and add the `Zigbee Home Automation` integration. Once the integration has installed it should create a dialogue asking you to select your co-ordinator which should be listed. With this selected you can set about putting your zigbee devices into a pairing mode, and clicking `Add device` on the zigbee integration page.
 
 ## Integrate Home Assistant with balenaSense
 You can follow the [balenaSense tutorial](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
