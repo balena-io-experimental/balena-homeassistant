@@ -18,3 +18,12 @@ services:
     restart: always
     volumes:
       - mosquitto:/mosquitto/data
+  hass-configurator:
+    image: "causticlab/hass-configurator-docker:latest"
+    restart: always
+    ports:
+      - "3218:3218"
+    volumes:
+      - 'config:/hass-config'
+    environment:
+      - HC_BASEPATH=/hass-config

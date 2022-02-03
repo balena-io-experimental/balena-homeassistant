@@ -69,12 +69,12 @@ To control devices using Z-Wave you'll need a compatible gateway device, as well
       USB_PATH: "/dev/ttyACM0"
       S0_LEGACY_KEY: "27DAB0C1BAD5DABFF74E4B5274E257C3"
     volumes:
-      - cache:/cache
+      - zjs:/cache
     ports:
       - '3000:3000' 
 ```
 
-You'll also need to add `cache:` to the volumes section of the file to use the above example. (More information about this container setup can be found [here](https://hub.docker.com/r/kpine/zwave-js-server).) Note that you will need to generate a random `S0_LEGACY_KEY` and possibly other keys as well - see the linked container documentation. For the `USB_PATH:` you will need to know the device name for your Z-Wave gateway hardware. `/dev/ttyACM0` is a typical value, but you can ssh into the HostOS and run `ls /dev` to see a list of devices. You may need to compare the list with the gateway plugged in and not plugged in to determine the name.
+You'll also need to add `zjs:` to the volumes section of the file to use the above example. (More information about this container setup can be found [here](https://hub.docker.com/r/kpine/zwave-js-server).) Note that you will need to generate a random `S0_LEGACY_KEY` and possibly other keys as well - see the linked container documentation. For the `USB_PATH:` you will need to know the device name for your Z-Wave gateway hardware. `/dev/ttyACM0` is a typical value, but you can ssh into the HostOS and run `ls /dev` to see a list of devices. You may need to compare the list with the gateway plugged in and not plugged in to determine the name.
 
 Once you've updated the docker-compose file, push the updated project to your fleet using the balenaCLI.
 
@@ -82,7 +82,7 @@ To complete the Z-Wave setup, you'll need to use the Home Assistant UI and selec
 
 ### Zigbee
 
-Like for z-wave, you'll need a gateway device to connect to zigbee devices. Zigbee call this a co-ordinator. We used a [Sonoff Dongle Plus](https://sonoff.tech/product/diy-smart-switch/sonoff-dongle-plus/) during testing, which we had to flash the firmware on the dongle before it could be used. We found the instructions on the [blakadder Compatibility Repository](https://zigbee.blakadder.com/Sonoff_ZBDongle-P.html) easy to follow. One the co-ordinator is flashed and ready to us, plug it into a USB port on the device running Home Assistant. Then go into the Home Assistant UI, into the Configuration page, Integrations and add the `Zigbee Home Automation` integration. Once the integration has installed it should create a dialogue asking you to select your co-ordinator which should be listed. With this selected you can set about putting your zigbee devices into a pairing mode, and clicking `Add device` on the zigbee integration page.
+Like for z-wave, you'll need a gateway device to connect to zigbee devices. Zigbee calls this a co-ordinator. We used a [Sonoff Dongle Plus](https://sonoff.tech/product/diy-smart-switch/sonoff-dongle-plus/) during testing, which we had to flash the firmware on the dongle before it could be used. We found the instructions on the [blakadder Compatibility Repository](https://zigbee.blakadder.com/Sonoff_ZBDongle-P.html) easy to follow. Once the co-ordinator is flashed and ready to use, plug it into a USB port on the device running Home Assistant. Then go into the Home Assistant UI, into the Configuration page, Integrations and add the `Zigbee Home Automation` integration. Once the integration has installed it should create a dialogue asking you to select your co-ordinator which should be listed. With this selected you can set about putting your zigbee devices into a pairing mode, and clicking `Add device` on the zigbee integration page.
 
 ## Integrate Home Assistant with balenaSense
 You can follow the [balenaSense tutorial](https://www.balena.io/blog/balenasense-v2-updated-temperature-pressure-and-humidity-monitoring-for-raspberry-pi/) to create a self-contained air quality monitoring device. Confirm that your balenaSense installation is up and running on the same network as this project.
@@ -205,6 +205,7 @@ volumes:
     mosquitto:
     influxdb:
     grafana:
+    zjs:
     cache:
 services:
   homeassistant:
@@ -214,7 +215,6 @@ services:
     privileged: true
     volumes:
       - 'config:/config'
-      - 'cache:/mycache'
     restart: always
   mqtt:
     build: mqtt
@@ -224,7 +224,7 @@ services:
     volumes:
       - mosquitto:/mosquitto/data
   hass-configurator:
-    image: "causticlab/hass-configurator-docker:arm"
+    image: "causticlab/hass-configurator-docker:latest"
     restart: always
     ports:
       - "3218:3218"
@@ -261,7 +261,7 @@ services:
       USB_PATH: "/dev/ttyACM0"
       S0_LEGACY_KEY: "27DAB0C1BAD5DABFF74E4B5274E257C3"
     volumes:
-      - cache:/cache
+      - zjs:/cache
     ports:
       - '3000:3000' 
 ```
