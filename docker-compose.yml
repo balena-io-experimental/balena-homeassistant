@@ -11,9 +11,6 @@ services:
     volumes:
       - 'config:/config'
     restart: always
-    devices:
-      - "/dev:/dev"
-      - "/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave"
   mqtt:
     build: mqtt
     ports:
@@ -22,10 +19,10 @@ services:
     volumes:
       - mosquitto:/mosquitto/data
   hass-configurator:
-    image: "causticlab/hass-configurator-docker:arm"
+    image: "causticlab/hass-configurator-docker:latest"
     restart: always
     ports:
-      - "8080:3218"
+      - "3218:3218"
     volumes:
       - 'config:/hass-config'
     environment:
