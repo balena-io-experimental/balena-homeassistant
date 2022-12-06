@@ -7,14 +7,14 @@ assets:
   repository:
     type: blob.asset
     data:
-      url: 'https://github.com/balenalabs-incubator/balena-homeassistant'
+      url: 'https://github.com/balena-io-experimental/balena-homeassistant'
   logo:
     type: blob.asset
     data:
       url: >-
-        https://raw.githubusercontent.com/balenalabs-incubator/balena-homeassistant/master/logo.png
+        https://raw.githubusercontent.com/balena-io-experimental/balena-homeassistant/master/logo.png
 data:
-  defaultDeviceType: raspberrypi4-64
+  defaultDeviceType: raspberrypi3
   supportedDeviceTypes:
     - raspberrypi3
     - raspberrypi4-64
